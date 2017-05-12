@@ -11,39 +11,53 @@ using namespace std;
 using namespace cv;
 
 
-void detectLight(Mat binaryImg) {
+void removeNoice(Mat binaryImg) {
+	Mat erodeStruct = getStructuringElement(MORPH_RECT, Size(5, 5));
+	erode(binaryImg, binaryImg, erodeStruct);
+
+	imshow("Erode", binaryImg);
+
+}
+
+
+void detectLight(Mat srcImg, Mat binaryImg, int offsetX, int offsetY) {
 	int threshold = 100;
 	Mat labelImg, stats, centroids;
 	int nLabels = connectedComponentsWithStats(binaryImg, labelImg, stats, centroids, 8, CV_32S);
 
 
-
 	std::vector<cv::Vec3b> colors(nLabels);
 	colors[0] = cv::Vec3b(0, 0, 0);
-	std::cout << "Number of connected components = " << nLabels << std::endl << std::endl;
+	//std::cout << "Number of connected components = " << nLabels << std::endl << std::endl;
 
 	for (int label = 1; label < nLabels; ++label) {
 		colors[label] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
-		//std::cout << "Component " << label << std::endl;
-		//std::cout << "CC_STAT_LEFT   = " << stats.at<int>(label, cv::CC_STAT_LEFT) << std::endl;
-		//std::cout << "CC_STAT_TOP    = " << stats.at<int>(label, cv::CC_STAT_TOP) << std::endl;
-		//std::cout << "CC_STAT_WIDTH  = " << stats.at<int>(label, cv::CC_STAT_WIDTH) << std::endl;
-		//std::cout << "CC_STAT_HEIGHT = " << stats.at<int>(label, cv::CC_STAT_HEIGHT) << std::endl;
-		std::cout << "CC_STAT_AREA   = " << stats.at<int>(label, cv::CC_STAT_AREA) << std::endl;
-		//std::cout << "CENTER = (" << centroids.at<double>(label, 0) << "," << centroids.at<double>(label, 1) << ")" << std::endl << std::endl;
+
+		int left = stats.at<int>(label, CC_STAT_LEFT) + offsetX;
+		int top = stats.at<int>(label, CC_STAT_TOP) + offsetY;
+		int width = stats.at<int>(label, CC_STAT_WIDTH);
+		int height = stats.at<int>(label, CC_STAT_HEIGHT);
+		int area = stats.at<int>(label, CC_STAT_AREA);
+		Point centroid = Point(centroids.at<double>(label, 0), centroids.at<double>(label, 1));
+
+		if (area > 100 && abs(width / height) < 2) {
+			rectangle(srcImg, Rect(left, top, width, height), Scalar(0, 0, 255), 2);
+
+		}
+
+
 	}
 
-	cv::Mat dst(binaryImg.size(), CV_8UC3);
+	//show labeling color
+	Mat dst(binaryImg.size(), CV_8UC3);
 	for (int r = 0; r < dst.rows; ++r) {
 		for (int c = 0; c < dst.cols; ++c) {
 			int label = labelImg.at<int>(r, c);
-			cv::Vec3b &pixel = dst.at<cv::Vec3b>(r, c);
-			pixel = colors[label];
+			Vec3b &pixel = dst.at<Vec3b>(r, c); //get the index of the pixel
+			pixel = colors[label]; //set new pixel
 		}
 	}
-
 	imshow("Labeling", dst);
-
 }
 
 
@@ -69,28 +83,34 @@ int main() {
 			break;
 		}
 
-		leftSrc = src(Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
-		cvtColor(leftSrc, leftGrey, CV_BGR2GRAY);
-		
-		leftROI = leftGrey(Rect(10, leftSrc.rows / 7 * 2, leftSrc.cols / 8 * 7, leftSrc.rows / 4 * 2)).clone();
-		//adaptiveThreshold(leftROI, leftROI, 0, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 11, 5);
-		//equalizeHist(leftROI, leftROI);
-		threshold(leftROI, leftROI, 220, 255, THRESH_BINARY); //OTSU is not necessary to set thres
-		detectLight(leftROI);
+		//leftSrc = src(Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
+		//cvtColor(leftSrc, leftGrey, CV_BGR2GRAY);
+		//
+		//rectangle(leftSrc, Rect(10, leftSrc.rows / 7 * 2, leftSrc.cols / 7 * 6, leftSrc.rows / 4 * 2), Scalar(0, 255, 0), 2); // detect ROI
+		//leftROI = leftGrey(Rect(10, leftSrc.rows / 7 * 2, leftSrc.cols / 7 * 6, leftSrc.rows / 4 * 2));
+		//
+		////adaptiveThreshold(leftROI, leftROI, 0, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 11, 5);
+		////equalizeHist(leftROI, leftROI);
+		//threshold(leftROI, leftROI, 220, 255, THRESH_BINARY); //OTSU is not necessary to set thres
+		//removeNoice(leftROI);
+		//detectLight(leftSrc, leftROI, 10, leftSrc.rows / 7 * 2);
 		
 
-		//rightSrc = src(Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
-		//cvtColor(rightSrc, rightGrey, CV_BGR2GRAY);
+		rightSrc = src(Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
+		cvtColor(rightSrc, rightGrey, CV_BGR2GRAY);
+		rectangle(rightSrc, Rect(100, rightSrc.rows / 7 * 2, rightSrc.cols / 7 * 6, rightSrc.rows / 4 * 2), Scalar(0, 255, 0), 2); // detect ROI
+		rightROI = rightGrey(Rect(100, rightSrc.rows / 7 * 2, rightSrc.cols / 7 * 6, rightSrc.rows / 4 * 2));
+		threshold(rightROI, rightROI, 220, 255, THRESH_BINARY); //OTSU is not necessary to set thres
+		removeNoice(rightROI);
+		detectLight(rightSrc, rightROI, 100, rightSrc.rows / 7 * 2);
 		
+		//imshow("Left Src", leftSrc);
+		//imshow("Left Grey", leftGrey);
+		//imshow("Left ROI", leftROI);
 		
-		imshow("Left Src", leftSrc);
-		imshow("Left Grey", leftGrey);
-		imshow("Left ROI", leftROI);
-		//imshow("Left Hist", leftHist);
-		
-		//imshow("src", src);
-		//imshow("Right Src", rightSrc);
-		//imshow("Right Grey", rightGrey);
+		imshow("Right Src", rightSrc);
+		imshow("Right Grey", rightGrey);
+		imshow("Right ROI", rightROI);
 		
 		waitKey(1);
 	}
