@@ -1,0 +1,7 @@
+﻿  main.cpp
+c:\users\henry\desktop\華創\nightvehicledetection\packages\opencvcontrib.3.1.0\build\native\include\opencv2\core\mat.hpp(1955): warning C4819: The file contains a character that cannot be represented in the current code page (950). Save the file in Unicode format to prevent data loss
+c:\users\henry\desktop\華創\nightvehicledetection\packages\opencvcontrib.3.1.0\build\native\include\opencv2\core\persistence.hpp : warning C4819: The file contains a character that cannot be represented in the current code page (950). Save the file in Unicode format to prevent data loss
+c:\users\henry\desktop\華創\nightvehicledetection\packages\opencvcontrib.3.1.0\build\native\include\opencv2\core\utility.hpp : warning C4819: The file contains a character that cannot be represented in the current code page (950). Save the file in Unicode format to prevent data loss
+c:\users\henry\desktop\華創\nightvehicledetection\packages\opencvcontrib.3.1.0\build\native\include\opencv2\core\utility.hpp : warning C4819: The file contains a character that cannot be represented in the current code page (950). Save the file in Unicode format to prevent data loss
+  NightVehicleDetection.vcxproj -> C:\Users\Henry\Desktop\華創\NightVehicleDetection\x64\Debug\NightVehicleDetection.exe
+  NightVehicleDetection.vcxproj -> C:\Users\Henry\Desktop\華創\NightVehicleDetection\x64\Debug\NightVehicleDetection.pdb (Full PDB)
