@@ -50,14 +50,44 @@ void detectLight(Mat srcImg, Mat binaryImg, int offsetX, int offsetY) {
 
 	//show labeling color
 	Mat dst(binaryImg.size(), CV_8UC3);
-	for (int r = 0; r < dst.rows; ++r) {
-		for (int c = 0; c < dst.cols; ++c) {
+	for (int r = 0; r < dst.rows; r++) {
+		for (int c = 0; c < dst.cols; c++) {
 			int label = labelImg.at<int>(r, c);
 			Vec3b &pixel = dst.at<Vec3b>(r, c); //get the index of the pixel
 			pixel = colors[label]; //set new pixel
 		}
 	}
 	imshow("Labeling", dst);
+}
+
+void lightThreshold(Mat greyImg) {
+	int greyLevel[256] = {0}; 
+	int numOfPixel = greyImg.rows * greyImg.cols;
+	int sumOfGreyLevel = 0;
+	int lightThreshold;
+
+	for (int r = 0; r < greyImg.rows; r++) {
+		for (int c = 0; c < greyImg.cols; c++){
+			int value = greyImg.at<uchar>(r, c);
+			greyLevel[value]++;
+		}
+	}
+
+	for (int i = 0; i < 256; i++) {
+		sumOfGreyLevel += greyLevel[i];
+		if (sumOfGreyLevel > 0.9 * numOfPixel) {
+			lightThreshold = i;
+			break;
+		}
+	}
+
+	threshold(greyImg, greyImg, lightThreshold, 255, THRESH_BINARY); //OTSU is not necessary to set thres
+
+	//for (int i = 0; i < 256; i++) {
+	//	cout << i << " = " << greyLevel[i] << endl;
+	//}
+
+
 }
 
 
@@ -83,34 +113,35 @@ int main() {
 			break;
 		}
 
-		//leftSrc = src(Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
-		//cvtColor(leftSrc, leftGrey, CV_BGR2GRAY);
-		//
-		//rectangle(leftSrc, Rect(10, leftSrc.rows / 7 * 2, leftSrc.cols / 7 * 6, leftSrc.rows / 4 * 2), Scalar(0, 255, 0), 2); // detect ROI
-		//leftROI = leftGrey(Rect(10, leftSrc.rows / 7 * 2, leftSrc.cols / 7 * 6, leftSrc.rows / 4 * 2));
-		//
-		////adaptiveThreshold(leftROI, leftROI, 0, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 11, 5);
-		////equalizeHist(leftROI, leftROI);
+		leftSrc = src(Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
+		cvtColor(leftSrc, leftGrey, CV_BGR2GRAY);
+		
+		rectangle(leftSrc, Rect(10, leftSrc.rows / 7 * 2, leftSrc.cols / 7 * 6, leftSrc.rows / 4 * 2), Scalar(0, 255, 0), 2); // detect ROI
+		leftROI = leftGrey(Rect(10, leftSrc.rows / 7 * 2, leftSrc.cols / 7 * 6, leftSrc.rows / 4 * 2));
+		
+		//adaptiveThreshold(leftROI, leftROI, 0, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 11, 5);
+		//equalizeHist(leftROI, leftROI);
 		//threshold(leftROI, leftROI, 220, 255, THRESH_BINARY); //OTSU is not necessary to set thres
-		//removeNoice(leftROI);
-		//detectLight(leftSrc, leftROI, 10, leftSrc.rows / 7 * 2);
+		lightThreshold(leftROI);
+		removeNoice(leftROI);
+		detectLight(leftSrc, leftROI, 10, leftSrc.rows / 7 * 2);
 		
 
-		rightSrc = src(Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
-		cvtColor(rightSrc, rightGrey, CV_BGR2GRAY);
-		rectangle(rightSrc, Rect(100, rightSrc.rows / 7 * 2, rightSrc.cols / 7 * 6, rightSrc.rows / 4 * 2), Scalar(0, 255, 0), 2); // detect ROI
-		rightROI = rightGrey(Rect(100, rightSrc.rows / 7 * 2, rightSrc.cols / 7 * 6, rightSrc.rows / 4 * 2));
-		threshold(rightROI, rightROI, 220, 255, THRESH_BINARY); //OTSU is not necessary to set thres
-		removeNoice(rightROI);
-		detectLight(rightSrc, rightROI, 100, rightSrc.rows / 7 * 2);
+		//rightSrc = src(Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2));
+		//cvtColor(rightSrc, rightGrey, CV_BGR2GRAY);
+		//rectangle(rightSrc, Rect(100, rightSrc.rows / 7 * 2, rightSrc.cols / 7 * 6, rightSrc.rows / 4 * 2), Scalar(0, 255, 0), 2); // detect ROI
+		//rightROI = rightGrey(Rect(100, rightSrc.rows / 7 * 2, rightSrc.cols / 7 * 6, rightSrc.rows / 4 * 2));
+		//threshold(rightROI, rightROI, 220, 255, THRESH_BINARY); //OTSU is not necessary to set thres
+		//removeNoice(rightROI);
+		//detectLight(rightSrc, rightROI, 100, rightSrc.rows / 7 * 2);
 		
-		//imshow("Left Src", leftSrc);
-		//imshow("Left Grey", leftGrey);
-		//imshow("Left ROI", leftROI);
+		imshow("Left Src", leftSrc);
+		imshow("Left Grey", leftGrey);
+		imshow("Left ROI", leftROI);
 		
-		imshow("Right Src", rightSrc);
-		imshow("Right Grey", rightGrey);
-		imshow("Right ROI", rightROI);
+		//imshow("Right Src", rightSrc);
+		//imshow("Right Grey", rightGrey);
+		//imshow("Right ROI", rightROI);
 		
 		waitKey(1);
 	}
