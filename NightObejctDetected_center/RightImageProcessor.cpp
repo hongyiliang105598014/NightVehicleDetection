@@ -69,7 +69,7 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 	const int nLabels = connectedComponentsWithStats(binaryImg, labelImg, stats, centroids, 8, CV_16U);
 	ObjectDetectedVector.clear();
 
-	_headLightManager.setDetectRegion(ROIs[0], ROIs[1], offsetX, offsetY);
+	_headLightManager.setSideDetectRegion(ROIs, offsetX, offsetY);
 
 
 
@@ -84,7 +84,7 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 		const int top = stats.at<int>(label, CC_STAT_TOP) + offsetY;
 		Point centroid = Point(centroids.at<double>(label, 0) + offsetX, centroids.at<double>(label, 1) + offsetY);
 		const double HeightWidthRatio = static_cast<double>(height) / static_cast<double>(width);
-		if ((area < 2000) && HeightWidthRatio<2)
+		if ((area > 40) && (area < 2000) && HeightWidthRatio<2)
 		{
 			ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };
 			ObjectDetectedVector.push_back(objectDetected);

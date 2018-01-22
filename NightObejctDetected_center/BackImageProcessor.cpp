@@ -71,7 +71,7 @@ void BackImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 	const int nLabels = connectedComponentsWithStats(binaryImg, labelImg, stats, centroids, 8, CV_16U);
 	ObjectDetectedVector.clear();
 
-	_headLightManager.setDetectRegion(ROIs[0], ROIs[1], offsetX, offsetY);
+	_headLightManager.setBackDetectRegion(ROIs, offsetX, offsetY);
 
 
 

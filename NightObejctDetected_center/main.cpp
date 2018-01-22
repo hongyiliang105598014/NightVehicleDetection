@@ -30,14 +30,14 @@ int main() {
 
 	if (mode == 0)
 	{
-		DetectedPosition *detectedPosition = new DetectedBack(carPanoPath1);
+		DetectedPosition *detectedPosition = new DetectedBack(carBackPath1);
 		BackImageProcessor *backImageProcessor = new BackImageProcessor();
 		detectedPosition->SetImageProcessor(backImageProcessor);
 		detectedPosition->run();
 	}
 	else if (mode == 1)
 	{
-		DetectedPosition *detectedPosition = new DetectedRight(carRightPath);
+		DetectedPosition *detectedPosition = new DetectedRight(carPanoPath1);
 		RightImageProcessor *rightImageProcessor = new RightImageProcessor();
 		detectedPosition->SetImageProcessor(rightImageProcessor);
 		detectedPosition->run();
@@ -45,13 +45,12 @@ int main() {
 
 	else if (mode == 2)
 	{
-		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath);
-		BackImageProcessor *backImageProcessor = new BackImageProcessor();
-		RightImageProcessor *rightImageProcessor = new RightImageProcessor();
-		
+		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath1);
+		ImageProcessor *backImageProcessor = new BackImageProcessor();
+		ImageProcessor *rightImageProcessor = new RightImageProcessor();
 		detectedPosition->SetImageProcessor(backImageProcessor);
+		detectedPosition->SetImageProcessor(rightImageProcessor);
 		detectedPosition->run();
 	}
-
 	return 0;
 }

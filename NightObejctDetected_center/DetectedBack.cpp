@@ -16,6 +16,11 @@ void DetectedBack::SetImageProcessor(ImageProcessor *imageProcessor)
 	processor = imageProcessor;
 }
 
+Mat DetectedBack::getResult()
+{
+	return src;
+}
+
 void DetectedBack::run()
 {
 	
@@ -28,7 +33,7 @@ void DetectedBack::run()
 	}
 
 
-	capture.set(CV_CAP_PROP_POS_FRAMES, 5000);
+	capture.set(CV_CAP_PROP_POS_FRAMES, 0);
 	
 	for (;;)
 	{
