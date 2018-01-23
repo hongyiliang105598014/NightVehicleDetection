@@ -126,6 +126,7 @@
     <ClCompile Include="DetectedPosition.cpp" />
     <ClCompile Include="DetectedRight.cpp" />
     <ClCompile Include="HeadLightManager.cpp" />
+    <ClCompile Include="LeftImageProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MotionEstimate.cpp" />
     <ClCompile Include="ObjectTracker.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="DetectedPano.h" />
     <ClInclude Include="HeadLightManager.h" />
     <ClInclude Include="ImageProcessor.h" />
+    <ClInclude Include="LeftImageProcessor.h" />
     <ClInclude Include="MotionEstimate.h" />
     <ClInclude Include="ObjectDetected.h" />
     <ClInclude Include="ObjectTracker.h" />

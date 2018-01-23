@@ -9,8 +9,6 @@ public:
 	void SetImageProcessor(ImageProcessor *imageProcessor);
 	~DetectedPano();
 	void run();
-	void setBackImageProcessorResult(Mat res);
-	void setRightImageProcessorResult(Mat res);
 private:
 	Mat gray;
 	Mat backResult;
@@ -20,6 +18,8 @@ private:
 	Rect leftPosition;
 	ImageProcessor *backImageProcessor;
 	ImageProcessor *rightImageProcessor;
+	ImageProcessor *leftImageProcessor;
 	vector<Rect> backROIs;
 	vector<Rect> rightROIs;
+	vector<Rect> leftROIs;
 };

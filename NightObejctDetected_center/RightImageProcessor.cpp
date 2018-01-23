@@ -151,7 +151,10 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 				{
 					ObjectDetectedVector[i].isMatched = true;
 					ObjectDetectedVector[j].isMatched = true;
-					Rect2d carLightRect = Rect2d(ObjectDetectedVector[i].region.x, ObjectDetectedVector[j].region.y, (ObjectDetectedVector[j].region.x + ObjectDetectedVector[j].region.width) - ObjectDetectedVector[i].region.x, ObjectDetectedVector[j].region.height);
+					Rect2d carLightRect = Rect2d(ObjectDetectedVector[i].region.x, 
+												 ObjectDetectedVector[j].region.y, 
+												(ObjectDetectedVector[j].region.x + ObjectDetectedVector[j].region.width) - ObjectDetectedVector[i].region.x, 
+												 ObjectDetectedVector[j].region.height);
 
 # ifdef ENABLE_TRACKER
 

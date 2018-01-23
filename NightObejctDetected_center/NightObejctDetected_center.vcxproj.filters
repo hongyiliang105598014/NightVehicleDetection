@@ -54,6 +54,9 @@
     <ClCompile Include="DetectedPano.cpp">
       <Filter>資源檔</Filter>
     </ClCompile>
+    <ClCompile Include="LeftImageProcessor.cpp">
+      <Filter>資源檔</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBrightObjectSegment.h">
@@ -96,6 +99,9 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="DetectedPano.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftImageProcessor.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

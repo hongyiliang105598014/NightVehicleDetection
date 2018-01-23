@@ -5,6 +5,7 @@
 #include <iostream>
 #include "RightImageProcessor.h"
 #include "BackImageProcessor.h"
+#include "LeftImageProcessor.h"
 #include "DetectedRight.h"
 #include "DetectedBack.h"
 #include "DetectedPano.h"
@@ -37,7 +38,7 @@ int main() {
 	}
 	else if (mode == 1)
 	{
-		DetectedPosition *detectedPosition = new DetectedRight(carPanoPath1);
+		DetectedPosition *detectedPosition = new DetectedRight(carRightPath);
 		RightImageProcessor *rightImageProcessor = new RightImageProcessor();
 		detectedPosition->SetImageProcessor(rightImageProcessor);
 		detectedPosition->run();
@@ -48,8 +49,10 @@ int main() {
 		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath1);
 		ImageProcessor *backImageProcessor = new BackImageProcessor();
 		ImageProcessor *rightImageProcessor = new RightImageProcessor();
+		ImageProcessor *leftImageProcessor = new LeftImageProcessor();
 		detectedPosition->SetImageProcessor(backImageProcessor);
 		detectedPosition->SetImageProcessor(rightImageProcessor);
+		detectedPosition->SetImageProcessor(leftImageProcessor);
 		detectedPosition->run();
 	}
 	return 0;
