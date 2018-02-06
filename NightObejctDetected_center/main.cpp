@@ -24,10 +24,20 @@ int main() {
 	string carBackPath7 = "D:/UserFolder/Desktop/haitec/video/car_back/華創鏡頭/SJCAM-car-distance40-30.mp4";
 	string carBackPath8 = "D:/UserFolder/Desktop/haitec/video/car_back/華創鏡頭/SJCAM-car-distance20-10-5.mp4";
 	string carBackPath9 = "D:/UserFolder/Desktop/haitec/video/car_back/華創鏡頭/FILE0268.mp4";
-	string carRightPath = "D:/UserFolder/Desktop/haitec/video/cut/highway1.avi";
+	string carRightPath1 = "D:/UserFolder/Desktop/haitec/video/cut/highway1.avi";
+	string carRightPath2 = "D:/UserFolder/Desktop/haitec/video/cut/highway2.avi";
+	string carRightPath3 = "D:/UserFolder/Desktop/haitec/video/cut/lowbrightness1.avi";
+	string carRightPath4 = "D:/UserFolder/Desktop/haitec/video/cut/lowbrightness2.avi";
 
-	string carPanoPath = "D:/UserFolder/Desktop/haitec/video/car_pano_sunny/AV1-20180101_022850.avi"; //frame 0 ~ 1000
-	string carPanoPath1 = "D:/UserFolder/Desktop/haitec/video/car_pano_sunny/AV1-20180101_022350.avi"; //frame 1410
+	string carPanoPath1 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/highway1.avi"; //frame 0 ~ 1000 city
+	string carPanoPath2 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/highway2.avi"; //frame 1410 highway
+	string carPanoPath3 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/highway3.avi"; //frame 1410 highway
+	string carPanoPath4 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/road1.avi";
+	string carPanoPath5 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/dazi/9m.avi";
+	string carPanoPath6 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/dazi/car1_rainy.avi";
+	string carPanoPath7 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/dazi/motor1_rainy.avi";
+	string carPanoPath8 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/distance_test/left.avi";
+	string carPanoPath9 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/distance_test/right1.avi";
 
 	if (mode == 0)
 	{
@@ -38,7 +48,7 @@ int main() {
 	}
 	else if (mode == 1)
 	{
-		DetectedPosition *detectedPosition = new DetectedRight(carRightPath);
+		DetectedPosition *detectedPosition = new DetectedRight(carRightPath4);
 		RightImageProcessor *rightImageProcessor = new RightImageProcessor();
 		detectedPosition->SetImageProcessor(rightImageProcessor);
 		detectedPosition->run();
@@ -46,7 +56,7 @@ int main() {
 
 	else if (mode == 2)
 	{
-		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath1);
+		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath6);
 		ImageProcessor *backImageProcessor = new BackImageProcessor();
 		ImageProcessor *rightImageProcessor = new RightImageProcessor();
 		ImageProcessor *leftImageProcessor = new LeftImageProcessor();

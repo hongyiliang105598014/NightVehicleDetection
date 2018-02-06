@@ -1,7 +1,7 @@
 #include "DetectedRight.h"
 DetectedRight::DetectedRight(string path) :DetectedPosition(path)
 {
-	position= Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
+	position= Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
 }
 
 DetectedRight::~DetectedRight()
@@ -18,16 +18,25 @@ Mat DetectedRight::getResult()
 	return src;
 }
 
-
+#include <fstream>
 void DetectedRight::run()
 {
 	CBrightObjectSegment brightObjectSegment(0.985);
 	CBrightObjectSegment brightObjectSegment2(0.985);
 	
+	char filename[] = "FPS4.csv";
+	fstream fp;
+	fp.open(filename, ios::app);//開啟檔案
+	if (!fp) {//如果開啟檔案失敗，fp為0；成功，fp為非0
+		cout << "Fail to open file: " << filename << endl;
+	}
 
 
 	while (true)
 	{
+		
+		clock_t begin = clock();
+
 		capture >> src;
 		if (src.empty())
 		{
@@ -68,6 +77,14 @@ void DetectedRight::run()
 		processor->removeNoice(GrayRectTemp, 5, 5, 7, 7);
 		processor->detectLight(src, GrayRectTemp, 0, Gray.rows * 28 / 100, ROIs);
 
+		clock_t end = clock();
+		double elapsedSecs = double(end - begin) / CLOCKS_PER_SEC;
+		stringstream ss, ss1;
+		ss << "FPS: " << int(1 / elapsedSecs);
+		ss1 << int(1 / elapsedSecs);
+		putText(src, ss.str(), Point(50, 50), 0, 1, Scalar(0, 0, 255), 3);
+		fp << ss1.str() << endl;
+
 		imshow("Right Result", src);
 		imshow("Right Binary Result", Front);
 		imshow("Right Binary Result2", Middle);
@@ -103,4 +120,6 @@ void DetectedRight::run()
 			break;
 		}
 	}
-}
+
+	fp.close()
+		; }

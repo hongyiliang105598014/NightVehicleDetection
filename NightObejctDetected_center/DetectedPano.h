@@ -4,10 +4,9 @@ class DetectedPano : public DetectedPosition
 {
 public:
 	DetectedPano(string path);
-	//void SetBackImageProcessor(ImageProcessor *imageProcessor);
-	//void SetSideImageProcessor(ImageProcessor *imageProcessor);
-	void SetImageProcessor(ImageProcessor *imageProcessor);
 	~DetectedPano();
+	void SetImageProcessor(ImageProcessor *imageProcessor);
+	void checkOverlappingRegion(Mat right, Mat back, Mat left, Mat pano);
 	void run();
 private:
 	Mat gray;

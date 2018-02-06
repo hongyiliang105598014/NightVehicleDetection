@@ -3,9 +3,10 @@
 
 HeadLightManager::HeadLightManager() 
 {
-	
 }
-HeadLightManager::~HeadLightManager() {}
+HeadLightManager::~HeadLightManager() 
+{
+}
 
 void HeadLightManager::setLightObjects(vector<ObjectDetected> lightObjects)
 {
@@ -59,6 +60,11 @@ void HeadLightManager::updateHeadLightPairs(Mat& srcImg, Mat srcTemp)
 	{
 		Rect2d currentTrackPos = _vectorOfObjectTracker[i].getCurrentPos();
 
+		/*stringstream ss;
+		ss << "car " << i + 1;
+
+		putText(srcImg, ss.str() , Point(currentTrackPos.x - 10, currentTrackPos.y - 10), 0, 1, Scalar(0, 0, 255), 3);*/
+
 		if (currentTrackPos.x < 10 || 
 			currentTrackPos.y < 10 ||
 			currentTrackPos.x + currentTrackPos.width > _offsetX + _center.x + _center.width ||
@@ -99,6 +105,22 @@ void HeadLightManager::updateHeadLightPairs(Mat& srcImg, Mat srcTemp)
 	{
 		_vectorOfObjectTracker[i].update(srcImg);
 	}
+
+	// draw the tracked object
+	/*Rect2d extHeadLight;
+
+	if (_headLight.x - 5 >= 0 && _headLight.y - 5 >= 0 && _headLight.width + 10 <= srcImg.cols && _headLight.height + 10 <= srcImg.rows)
+	{
+		extHeadLight.x = _headLight.x - 5;
+		extHeadLight.y = _headLight.y - 5;
+		extHeadLight.width = _headLight.width + 10;
+		extHeadLight.height = _headLight.height + 10;
+		rectangle(srcImg, extHeadLight, Scalar(255, 0, 0), 2, 1);
+	}
+	else
+	{
+		rectangle(srcImg, _headLight, Scalar(255, 0, 0), 2, 1);
+	}*/
 }
 
 void HeadLightManager::setBackDetectRegion(vector<Rect> positions, int offsetX, int offsetY)
@@ -116,4 +138,9 @@ void HeadLightManager::setSideDetectRegion(vector<Rect> positions, int offsetX, 
 	_center = positions[1];
 	_offsetX = offsetX;
 	_offsetY = offsetY;
+}
+
+vector<ObjectTracker> HeadLightManager::getVectorOfObjectTracker()
+{
+	return _vectorOfObjectTracker;
 }

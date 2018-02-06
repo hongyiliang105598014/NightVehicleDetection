@@ -25,7 +25,7 @@ public:
 	virtual void setHeadLightManager(HeadLightManager headLightManager) = 0;
 	virtual vector<ObjectDetected> getObjectDetectedVector() = 0;
 	virtual int thresholdValue(Mat& src) = 0;
-
+	virtual vector<ObjectTracker> getVectorOfObjectTracker() = 0;
 	bool isCarLightHeightDiffYCorrect(int diffY, int distance);
 	
 

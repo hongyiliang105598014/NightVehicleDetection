@@ -84,36 +84,46 @@ void LeftImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 		const int top = stats.at<int>(label, CC_STAT_TOP) + offsetY;
 		Point centroid = Point(centroids.at<double>(label, 0) + offsetX, centroids.at<double>(label, 1) + offsetY);
 		const double HeightWidthRatio = static_cast<double>(height) / static_cast<double>(width);
-		if ((area > 40) && (area < 2000) && HeightWidthRatio<2)
+		if (area > 20 && area < 4000 && HeightWidthRatio<2)
 		{
-			ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };
-			ObjectDetectedVector.push_back(objectDetected);
+			if (ROIs[0].contains(centroid) && area > 50)
+			{
+				cout << "ROI000" << endl;
+				ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };
+				ObjectDetectedVector.push_back(objectDetected);
+			}
+			else if (!ROIs[0].contains(centroid))
+			{
+				ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };
+				ObjectDetectedVector.push_back(objectDetected);
+			}
+
 		}
 
 	}
 
 	//extract the object in upper postion
-	//for (int i = 0; i < ObjectDetectedVector.size(); i++)
-	//{
-	//	for (int j = 0; j < ObjectDetectedVector.size(); j++)
-	//	{
-	//		if ((ObjectDetectedVector[i].centroid.y < ObjectDetectedVector[j].centroid.y) &&
-	//			((ObjectDetectedVector[i].upperPosition != false) || (ObjectDetectedVector[j].upperPosition != false)))
-	//		{
-	//			int widthStart = ObjectDetectedVector[j].region.x;
-	//			int widthEnd = ObjectDetectedVector[j].region.x + ObjectDetectedVector[i].region.width;
-	//			while (widthStart<widthEnd)
-	//			{
-	//				if (ObjectDetectedVector[i].region.contains(CvPoint(widthStart, ObjectDetectedVector[i].centroid.y)))
-	//				{
-	//					ObjectDetectedVector[j].upperPosition = false;
-	//					break;
-	//				}
-	//				widthStart++;
-	//			}
-	//		}
-	//	}
-	//}
+	for (int i = 0; i < ObjectDetectedVector.size(); i++)
+	{
+		for (int j = 0; j < ObjectDetectedVector.size(); j++)
+		{
+			if ((ObjectDetectedVector[i].centroid.y < ObjectDetectedVector[j].centroid.y) &&
+				((ObjectDetectedVector[i].upperPosition != false) || (ObjectDetectedVector[j].upperPosition != false)))
+			{
+				int widthStart = ObjectDetectedVector[j].region.x;
+				int widthEnd = ObjectDetectedVector[j].region.x + ObjectDetectedVector[i].region.width;
+				while (widthStart<widthEnd)
+				{
+					if (ObjectDetectedVector[i].region.contains(CvPoint(widthStart, ObjectDetectedVector[i].centroid.y)))
+					{
+						ObjectDetectedVector[j].upperPosition = false;
+						break;
+					}
+					widthStart++;
+				}
+			}
+		}
+	}
 
 	for (vector<ObjectDetected>::iterator it = ObjectDetectedVector.begin(); it != ObjectDetectedVector.end();)
 	{
@@ -144,17 +154,16 @@ void LeftImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 				const double carLightDistanse = ObjectDetectedVector[i].centroid.x - ObjectDetectedVector[j].centroid.x;
 				const double carLeftingDistanse = ObjectDetectedVector[j].centroid.x + carLightDistanse / 2;
 				const double carLightheightDiffY = abs(ObjectDetectedVector[i].centroid.y - ObjectDetectedVector[j].centroid.y);
-				if ((carLightheightDiffY < 5 /*&&
-					isCarLightHeightDiffYCorrect(carLightheightDiffY, carLeftingDistanse) &&
-					(-0.0005*pow(carLightDistanse, 3) + 0.1379*pow(carLightDistanse, 2) - 14.055*carLightDistanse + 679.14 <= carLeftingDistanse)
-					&& (-0.0301*pow(carLightDistanse, 2) + 0.8564*carLightDistanse + 575.29 >= carLeftingDistanse)*/))
+				if ((carLightheightDiffY < 10 &&
+					(-0.0005*pow(carLightDistanse, 3) + 0.1379*pow(carLightDistanse, 2) - 14.055*carLightDistanse + 579.14 <= carLeftingDistanse)
+					&& (-0.0301*pow(carLightDistanse, 2) + 0.8564*carLightDistanse + 475.29 >= carLeftingDistanse)))
 				{
 					ObjectDetectedVector[i].isMatched = true;
 					ObjectDetectedVector[j].isMatched = true;
 					Rect2d carLightRect = Rect2d(ObjectDetectedVector[j].region.x, 
 												 ObjectDetectedVector[j].region.y, 
 												(ObjectDetectedVector[i].region.x + ObjectDetectedVector[i].region.width) - ObjectDetectedVector[j].region.x, 
-												 ObjectDetectedVector[i].region.height);
+												 ObjectDetectedVector[j].region.height);
 
 # ifdef ENABLE_TRACKER
 
@@ -165,15 +174,15 @@ void LeftImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 					rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(255, 255, 0), 2);
 					rectangle(srcImg, ObjectDetectedVector[j].region, Scalar(255, 255, 0), 2);
 
-					ostringstream strs;
-					strs << carLightDistanse;
-					string str = strs.str();
-					ostringstream strs2;
-					strs2 << carLeftingDistanse;
-					string str2 = strs2.str();
-					putText(srcImg, str, CvPoint(carLeftingDistanse, ObjectDetectedVector[j].region.y), 0, 1, Scalar(0, 0, 255), 2);
-					putText(srcImg, str2, CvPoint(carLeftingDistanse, ObjectDetectedVector[j].region.y - 25), 0, 1, Scalar(0, 0, 255), 2);
-					fp << carLightDistanse << "," << carLeftingDistanse << endl;
+					//ostringstream strs;
+					//strs << carLightDistanse;
+					//string str = strs.str();
+					//ostringstream strs2;
+					//strs2 << carLeftingDistanse;
+					//string str2 = strs2.str();
+					//putText(srcImg, str, CvPoint(carLeftingDistanse, ObjectDetectedVector[j].region.y), 0, 1, Scalar(0, 0, 255), 2);
+					//putText(srcImg, str2, CvPoint(carLeftingDistanse, ObjectDetectedVector[j].region.y - 25), 0, 1, Scalar(0, 0, 255), 2);
+					//fp << carLightDistanse << "," << carLeftingDistanse << endl;
 				}
 			}
 		}
@@ -204,6 +213,7 @@ void LeftImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 # ifdef ENABLE_TRACKER
 	_headLightManager.setLightObjects(ObjectDetectedVector);
 	_headLightManager.updateHeadLightPairs(srcImg, srcTemp);
+	calcDistance(srcImg);
 # endif
 	fp.close();
 }
@@ -248,6 +258,39 @@ void LeftImageProcessor::extractEfficientImage(Mat& src)
 			if ((double(col) - double(src.cols / 3)>row * 8) || (double(col) - double(src.cols / 3)>double(row*(-1) + src.rows) * 4))
 				src.at<uchar>(row, col) = 0;
 		}
+	}
+}
+
+vector<ObjectTracker> LeftImageProcessor::getVectorOfObjectTracker()
+{
+	return _headLightManager.getVectorOfObjectTracker();
+}
+
+void LeftImageProcessor::calcDistance(Mat& srcImg)
+{
+	vector<ObjectTracker> headLights = _headLightManager.getVectorOfObjectTracker();
+
+	double lambda = 170.9;
+	//double lambda = 269.9;
+	
+
+	for (int i = 0; i < headLights.size(); i++)
+	{
+		Point vh = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), srcImg.rows / 2 - 100);
+		Point v1 = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), headLights[i].getCurrentPos().y + (headLights[i].getCurrentPos().height / 2));
+		Point v2 = Point(srcImg.cols / 2, srcImg.rows);
+		//line(srcImg, v1, v2, Scalar(255, 0, 0), 3);
+		//line(srcImg, Point(100, srcImg.rows / 2 - 100), Point(500, srcImg.rows / 2 - 100), Scalar(255, 0, 0), 3);
+
+		const double carDistance = lambda / sqrt(pow((v1.x - vh.x), 2) + pow((v1.y - vh.y), 2)) - lambda / sqrt(pow((v2.x - vh.x), 2) + pow((v2.y - vh.y), 2));
+		const double lambda2 = 10 / (1 / sqrt(pow((v1.x - vh.x), 2) + pow((v1.y - vh.y), 2))) - (1 / sqrt(pow((v2.x - vh.x), 2) + pow((v2.y - vh.y), 2)));
+		ostringstream strs2;
+		strs2.precision(2);
+		strs2 << carDistance << "m"/* << " : " << "l = " << lambda2*/;
+
+
+
+		putText(srcImg, strs2.str(), Point(headLights[i].getCurrentPos().x, headLights[i].getCurrentPos().y + 50), 0, 1, Scalar(0, 255, 0), 2);
 	}
 }
 
