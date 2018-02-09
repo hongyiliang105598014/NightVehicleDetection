@@ -84,11 +84,10 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 		const int top = stats.at<int>(label, CC_STAT_TOP) + offsetY;
 		Point centroid = Point(centroids.at<double>(label, 0) + offsetX, centroids.at<double>(label, 1) + offsetY);
 		const double HeightWidthRatio = static_cast<double>(height) / static_cast<double>(width);
-		if (area > 20 && area < 4000 && HeightWidthRatio<2)
+		if (area > 60 && area < 4000 && HeightWidthRatio < 2 && centroid.y > srcImg.rows / 2 - 10)
 		{
-			if (ROIs[0].contains(centroid) && area > 50)
+			if (ROIs[0].contains(centroid) && area > 80)
 			{
-				cout << "ROI000" << endl;
 				ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };
 				ObjectDetectedVector.push_back(objectDetected);
 			}
@@ -281,7 +280,7 @@ void RightImageProcessor::calcDistance(Mat& srcImg)
 
 	for (int i = 0; i < headLights.size(); i++)
 	{
-		Point vh = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), srcImg.rows / 2 - 30);
+		Point vh = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), srcImg.rows / 2 - 10);
 		Point v1 = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), headLights[i].getCurrentPos().y + (headLights[i].getCurrentPos().height / 2));
 		Point v2 = Point(srcImg.cols / 2, srcImg.rows);
 		//line(srcImg, v1, v2, Scalar(255, 0, 0), 3);

@@ -8,6 +8,7 @@ HeadLightManager::~HeadLightManager()
 {
 }
 
+
 void HeadLightManager::setLightObjects(vector<ObjectDetected> lightObjects)
 {
 	_lightObjects = lightObjects;
@@ -40,6 +41,8 @@ void HeadLightManager::setHeadLightPairs(Rect2d headLight, Mat& srcImg)
 	objectTracker.initialize(headLight, srcImg);
 	_vectorOfObjectTracker.push_back(objectTracker);
 	
+
+
 	//cout << " Size: " << _vectorOfObjectTracker.size() << endl;
 	//for (int i = 0; i < _vectorOfObjectTracker.size(); i++)
 	//{
@@ -48,13 +51,8 @@ void HeadLightManager::setHeadLightPairs(Rect2d headLight, Mat& srcImg)
 	//}
 }
 
-
 void HeadLightManager::updateHeadLightPairs(Mat& srcImg, Mat srcTemp)
 {
-	//bool isTrack = false;
-	//int trackIndex;
-
-	
 	//check whether tracker is out of detect window or not
 	for (int i = 0; i < _vectorOfObjectTracker.size(); i++)
 	{

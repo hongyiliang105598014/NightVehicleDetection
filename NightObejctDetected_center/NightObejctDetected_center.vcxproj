@@ -122,6 +122,7 @@
     <ClCompile Include="CBrightObjectSegment.cpp" />
     <ClCompile Include="CPartClass.cpp" />
     <ClCompile Include="DetectedBack.cpp" />
+    <ClCompile Include="DetectedLeft.cpp" />
     <ClCompile Include="DetectedPano.cpp" />
     <ClCompile Include="DetectedPosition.cpp" />
     <ClCompile Include="DetectedRight.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="CBrightObjectSegment.h" />
     <ClInclude Include="CPartClass.h" />
     <ClInclude Include="DetectedBack.h" />
+    <ClInclude Include="DetectedLeft.h" />
     <ClInclude Include="DetectedPosition.h" />
     <ClInclude Include="DetectedRight.h" />
     <ClInclude Include="DetectedPano.h" />

@@ -60,12 +60,12 @@ vector<ObjectDetected> BackImageProcessor::getObjectDetectedVector()
 #include<fstream>
 void BackImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, int offsetY, vector<Rect> ROIs)
 {
-	/*char filename[] = "Position.csv";
+	char filename[] = "car_back_pos.csv";
 	fstream fp;
 	fp.open(filename, ios::app);//開啟檔案
 	if (!fp) {//如果開啟檔案失敗，fp為0；成功，fp為非0
 		cout << "Fail to open file: " << filename << endl;
-	}*/
+	}
 
 	Mat labelImg, stats, centroids;
 	const int nLabels = connectedComponentsWithStats(binaryImg, labelImg, stats, centroids, 8, CV_16U);
@@ -90,7 +90,7 @@ void BackImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 
 
 		const double HeightWidthRatio = static_cast<double>(height) / static_cast<double>(width);
-		if ((area > 20) && (area < 4000) && HeightWidthRatio < 2) //haitec area > 400
+		if ((area > 55) && (area < 4000) && HeightWidthRatio < 2) //haitec area > 400
 		{
 			ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };
 			ObjectDetectedVector.push_back(objectDetected);
@@ -163,10 +163,10 @@ void BackImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 				const double carLeftingDistanse = srcImg.rows - ((ObjectDetectedVector[j].centroid.y + ObjectDetectedVector[i].centroid.y) / 2);
 				const double carDistance = (lambda / ((ObjectDetectedVector[j].centroid.y + ObjectDetectedVector[i].centroid.y) / 2 - (srcImg.rows / 2 - 12))) - (lambda / (srcImg.rows - (srcImg.rows / 2 - 12)));
 				const double carLightheightDiffY = abs(ObjectDetectedVector[j].centroid.y - ObjectDetectedVector[i].centroid.y); //height
-				if (carLightheightDiffY < 5 && 
+				if (carLightheightDiffY < 2 && 
 					carLightDistanse > 0 &&
-					(-0.0151*pow(carLightDistanse, 2) + 2.9012*carLightDistanse + 111.56 >= carLeftingDistanse - 70)
-					&& (-0.0151*pow(carLightDistanse, 2) + 2.9012*carLightDistanse + 111.56 <= carLeftingDistanse + 70))
+					(-0.0009*pow(carLightDistanse, 2) - 0.0487*carLightDistanse + 214.82 >= carLeftingDistanse - 50)
+					&& (-0.0009*pow(carLightDistanse, 2) - 0.0487*carLightDistanse + 214.82 <= carLeftingDistanse + 50))
 				{
 					ObjectDetectedVector[i].isMatched = true;
 					ObjectDetectedVector[j].isMatched = true;
@@ -198,7 +198,7 @@ void BackImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 					//string str2 = strs2.str();
 					//putText(srcImg, str, CvPoint(carLeftingDistanse, ObjectDetectedVector[j].region.y), 0, 1, Scalar(0, 0, 255), 2);
 					//putText(srcImg, str2, Point(ObjectDetectedVector[i].region.x, ObjectDetectedVector[j].region.y + 50), 0, 1, Scalar(0, 255, 0), 2);
-					//fp << carLightDistanse << "," << carLeftingDistanse << endl;
+					fp << carLightDistanse << "," << carLeftingDistanse << endl;
 
 					
 				}

@@ -8,6 +8,9 @@ public:
 	void SetImageProcessor(ImageProcessor *imageProcessor);
 	void checkOverlappingRegion(Mat right, Mat back, Mat left, Mat pano);
 	void run();
+	static bool sortByRightPosition(const ObjectTracker &a, const ObjectTracker &b);
+	static bool sortByLeftPosition(const ObjectTracker &a, const ObjectTracker &b);
+	static bool sortByBackPosition(const ObjectTracker &a, const ObjectTracker &b);
 private:
 	Mat gray;
 	Mat backResult;

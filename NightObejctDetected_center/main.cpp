@@ -8,13 +8,14 @@
 #include "LeftImageProcessor.h"
 #include "DetectedRight.h"
 #include "DetectedBack.h"
+#include "DetectedLeft.h"
 #include "DetectedPano.h"
 
 using namespace std;
 using namespace cv;
 
 int main() {
-	int mode = 2;
+	int mode = 3;
 	string carBackPath1 = "D:/UserFolder/Desktop/haitec/video/car_back/華創鏡頭/car-str.mp4";
 	string carBackPath2 = "D:/UserFolder/Desktop/haitec/video/car_back/華創鏡頭/car-curve.mp4";
 	string carBackPath3 = "D:/UserFolder/Desktop/haitec/video/car_back/華創鏡頭/car-curve2.mp4";
@@ -39,6 +40,10 @@ int main() {
 	string carPanoPath8 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/distance_test/left.avi";
 	string carPanoPath9 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/distance_test/right1.avi";
 
+	string carPanoPath10 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/neighu2_cut.mp4";
+	string carPanoPath11 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/neighu3_cut.mp4";
+	string carPanoPath12 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/neighu4_cut.mp4";
+
 	if (mode == 0)
 	{
 		DetectedPosition *detectedPosition = new DetectedBack(carBackPath1);
@@ -53,10 +58,16 @@ int main() {
 		detectedPosition->SetImageProcessor(rightImageProcessor);
 		detectedPosition->run();
 	}
-
 	else if (mode == 2)
 	{
-		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath6);
+		DetectedPosition *detectedPosition = new DetectedLeft(carPanoPath12);
+		LeftImageProcessor *leftImageProcessor = new LeftImageProcessor();
+		detectedPosition->SetImageProcessor(leftImageProcessor);
+		detectedPosition->run();
+	}
+	else if (mode == 3)
+	{
+		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath11);
 		ImageProcessor *backImageProcessor = new BackImageProcessor();
 		ImageProcessor *rightImageProcessor = new RightImageProcessor();
 		ImageProcessor *leftImageProcessor = new LeftImageProcessor();

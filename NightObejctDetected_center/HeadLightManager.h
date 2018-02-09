@@ -20,6 +20,8 @@ public:
 	void setBackDetectRegion(vector<Rect> positions, int offsetX, int offsetY);
 	void setSideDetectRegion(vector<Rect> positions, int offsetX, int offsetY);
 	vector<ObjectTracker> getVectorOfObjectTracker();
+
+	
 	
 private:
 	vector<Rect2d> _headLightPairs;

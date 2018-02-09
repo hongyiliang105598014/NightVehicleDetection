@@ -16,6 +16,7 @@ public:
 	void initialize(Rect2d startPos, Mat& srcImg);
 	void update(Mat& srcImg);
 	Rect2d getCurrentPos();
+	Rect2d _headLight;
 	void setCurrentPosOffsetForPano(int offsetX, int offsetY);
 	void addObjectContain();
 	int getNumberOfObjectContain();
@@ -23,10 +24,10 @@ public:
 	void setFrameCount(int count);
 	int getFrameCount();
 	bool IsOverlapping = false;
+	int ID = 0;
 private:
 	string _trackingAlg = "KCF";
 	Ptr<Tracker> _tracker;
-	Rect2d _headLight;
 	int _objectContainCount = 0;
 	int _frameCount = 0;
 	

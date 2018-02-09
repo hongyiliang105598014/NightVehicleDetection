@@ -21,8 +21,8 @@ Mat DetectedRight::getResult()
 #include <fstream>
 void DetectedRight::run()
 {
-	CBrightObjectSegment brightObjectSegment(0.985);
-	CBrightObjectSegment brightObjectSegment2(0.985);
+	CBrightObjectSegment brightObjectSegment(0.995);
+	CBrightObjectSegment brightObjectSegment2(0.995);
 	
 	char filename[] = "FPS4.csv";
 	fstream fp;
@@ -52,27 +52,35 @@ void DetectedRight::run()
 		GrayRect = Gray(ROI);
 		GrayRectTemp = GrayRect.clone();
 
-		const int FrontRectX = 0;
-		const int FrontRectY = Gray.rows * 28 / 100;
-		const int FrontRectWidth = Gray.cols * 2 / 5;
-		const int FrontRectHeight = Gray.rows * 5 / 12;
-		Rect FrontRect = Rect(FrontRectX, FrontRectY, FrontRectWidth, FrontRectHeight);
-		rectangle(src, FrontRect, Scalar(0, 0, 255), 1, 8, 0); // draw Front ROI
+		const int frontRectX = Gray.cols * 4 / 20;
+		const int frontRectY = Gray.rows * 28 / 100;
+		const int frontRectWidth = Gray.cols * 16 / 20;
+		const int frontRectHeight = Gray.rows * 5 / 12;
+		Rect frontRect = Rect(frontRectX, frontRectY, frontRectWidth, frontRectHeight);
+		rectangle(src, frontRect, Scalar(0, 255, 255), 1, 8, 0); // draw Front ROI
+
+		const int nearRectX = Gray.cols * 3 / 5;
+		const int nearRectY = Gray.rows * 28 / 100;
+		const int nearRectWidth = Gray.cols * 2 / 5;
+		const int nearRectHeight = Gray.rows * 5 / 12;
+
+		Rect nearRect = Rect(nearRectX, nearRectY, nearRectWidth, nearRectHeight);
+		rectangle(src, nearRect, Scalar(0, 0, 255), 1, 8, 0); // draw Front ROI
 
 		//imageProcessor.extractEfficientImage(rightGrayRectTemp);
 
-		Rect FrontROI = Rect(0, 0, FrontRectWidth, FrontRectHeight);
-		Rect MiddleROI = Rect(FrontRectWidth, 0, Gray.cols * 17 / 20 - FrontRectWidth, FrontRectHeight);
+		Rect frontROI = Rect(frontRectX, frontRectY, frontRectWidth, frontRectHeight);
+		Rect nearROI = Rect(nearRectX, nearRectY, nearRectWidth, nearRectHeight);
 
-		ROIs.push_back(FrontRect); //detect and track single light 
-		ROIs.push_back(MiddleROI);
+		ROIs.push_back(frontROI); //detect and track single light 
+		ROIs.push_back(nearROI);
 
 
-		Mat Front = GrayRectTemp(FrontROI);
-		Mat Middle = GrayRectTemp(MiddleROI);
+		Mat front = GrayRectTemp(frontROI);
+		Mat near = GrayRectTemp(nearROI);
 
-		brightObjectSegment.getBinaryImage(Front);
-		brightObjectSegment2.getBinaryImage(Middle);
+		brightObjectSegment.getBinaryImage(front);
+		brightObjectSegment2.getBinaryImage(near);
 
 		processor->removeNoice(GrayRectTemp, 5, 5, 7, 7);
 		processor->detectLight(src, GrayRectTemp, 0, Gray.rows * 28 / 100, ROIs);
@@ -86,8 +94,8 @@ void DetectedRight::run()
 		fp << ss1.str() << endl;
 
 		imshow("Right Result", src);
-		imshow("Right Binary Result", Front);
-		imshow("Right Binary Result2", Middle);
+		imshow("Right Binary Result", front);
+		imshow("Right Binary Result2", near);
 
 		videoWriter << src;
 		switch (1) {
@@ -121,5 +129,5 @@ void DetectedRight::run()
 		}
 	}
 
-	fp.close()
-		; }
+	fp.close(); 
+}
