@@ -1,7 +1,7 @@
 #include "DetectedRight.h"
 DetectedRight::DetectedRight(string path) :DetectedPosition(path)
 {
-	position= Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
+	position= Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
 }
 
 DetectedRight::~DetectedRight()
@@ -46,44 +46,34 @@ void DetectedRight::run()
 		src = src(position);
 		cvtColor(src, Gray, CV_BGR2GRAY);
 
-		//right part
-		Rect ROI = Rect(0, Gray.rows * 28 / 100, Gray.cols * 17 / 20, Gray.rows * 5 / 12);
-		rectangle(src, ROI, Scalar(0, 255, 255), 1, 8, 0); // draw ROI
-		GrayRect = Gray(ROI);
-		GrayRectTemp = GrayRect.clone();
-
-		const int frontRectX = Gray.cols * 4 / 20;
+		const int frontRectX = 0;
 		const int frontRectY = Gray.rows * 28 / 100;
 		const int frontRectWidth = Gray.cols * 16 / 20;
 		const int frontRectHeight = Gray.rows * 5 / 12;
-		Rect frontRect = Rect(frontRectX, frontRectY, frontRectWidth, frontRectHeight);
-		rectangle(src, frontRect, Scalar(0, 255, 255), 1, 8, 0); // draw Front ROI
+		Rect frontRectROI = Rect(frontRectX, frontRectY, frontRectWidth, frontRectHeight);
+		Mat frontRect = Gray(frontRectROI);
+		rectangle(src, frontRectROI, Scalar(0, 255, 255), 1, 8, 0); // draw Front ROI
 
-		const int nearRectX = Gray.cols * 3 / 5;
+		const int nearRectX = 0;
 		const int nearRectY = Gray.rows * 28 / 100;
 		const int nearRectWidth = Gray.cols * 2 / 5;
 		const int nearRectHeight = Gray.rows * 5 / 12;
 
-		Rect nearRect = Rect(nearRectX, nearRectY, nearRectWidth, nearRectHeight);
-		rectangle(src, nearRect, Scalar(0, 0, 255), 1, 8, 0); // draw Front ROI
+		Rect nearRectROI = Rect(nearRectX, nearRectY, nearRectWidth, nearRectHeight);
+		Mat nearRect = Gray(nearRectROI);
+		rectangle(src, nearRectROI, Scalar(0, 0, 255), 1, 8, 0); // draw Front ROI
 
 		//imageProcessor.extractEfficientImage(rightGrayRectTemp);
 
-		Rect frontROI = Rect(frontRectX, frontRectY, frontRectWidth, frontRectHeight);
-		Rect nearROI = Rect(nearRectX, nearRectY, nearRectWidth, nearRectHeight);
-
-		ROIs.push_back(frontROI); //detect and track single light 
-		ROIs.push_back(nearROI);
 
 
-		Mat front = GrayRectTemp(frontROI);
-		Mat near = GrayRectTemp(nearROI);
+		ROIs.push_back(nearRectROI); //detect and track single light 
+		ROIs.push_back(frontRectROI);
 
-		brightObjectSegment.getBinaryImage(front);
-		brightObjectSegment2.getBinaryImage(near);
+		brightObjectSegment.getBinaryImage(frontRect);
 
-		processor->removeNoice(GrayRectTemp, 5, 5, 7, 7);
-		processor->detectLight(src, GrayRectTemp, 0, Gray.rows * 28 / 100, ROIs);
+		processor->removeNoice(frontRect, 5, 5, 7, 7);
+		processor->detectLight(src, frontRect, 0, Gray.rows * 28 / 100, ROIs);
 
 		clock_t end = clock();
 		double elapsedSecs = double(end - begin) / CLOCKS_PER_SEC;
@@ -94,8 +84,8 @@ void DetectedRight::run()
 		fp << ss1.str() << endl;
 
 		imshow("Right Result", src);
-		imshow("Right Binary Result", front);
-		imshow("Right Binary Result2", near);
+		imshow("Right Binary Result", frontRect);
+		//imshow("Right Binary Result2", near);
 
 		videoWriter << src;
 		switch (1) {

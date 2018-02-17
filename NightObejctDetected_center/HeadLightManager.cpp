@@ -17,7 +17,7 @@ void HeadLightManager::setLightObjects(vector<ObjectDetected> lightObjects)
 void HeadLightManager::setHeadLightPairs(Rect2d headLight, Mat& srcImg)
 {
 	ObjectTracker objectTracker;
-
+	int carNo = 1;
 	int intersactionArea = 0;
 	int flag = -1;
 	for (int i = 0; i < _vectorOfObjectTracker.size(); i++)
@@ -40,8 +40,6 @@ void HeadLightManager::setHeadLightPairs(Rect2d headLight, Mat& srcImg)
 
 	objectTracker.initialize(headLight, srcImg);
 	_vectorOfObjectTracker.push_back(objectTracker);
-	
-
 
 	//cout << " Size: " << _vectorOfObjectTracker.size() << endl;
 	//for (int i = 0; i < _vectorOfObjectTracker.size(); i++)

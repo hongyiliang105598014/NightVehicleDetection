@@ -84,9 +84,9 @@ void LeftImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, in
 		const int top = stats.at<int>(label, CC_STAT_TOP) + offsetY;
 		Point centroid = Point(centroids.at<double>(label, 0) + offsetX, centroids.at<double>(label, 1) + offsetY);
 		const double HeightWidthRatio = static_cast<double>(height) / static_cast<double>(width);
-		if (area > 20 && area < 4000 && HeightWidthRatio < 2 && centroid.y > srcImg.rows / 2 - 50)
+		if (area > 80 && area < 4000 && HeightWidthRatio < 2 && centroid.y > srcImg.rows / 2 - 50)
 		{
-			if (ROIs[0].contains(centroid) && area > 50)
+			if (ROIs[0].contains(centroid) && area > 100)
 			{
 				cout << "ROI000" << endl;
 				ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };

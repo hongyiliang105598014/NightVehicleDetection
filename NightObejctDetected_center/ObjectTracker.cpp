@@ -6,6 +6,17 @@ ObjectTracker::ObjectTracker() {}
 ObjectTracker::~ObjectTracker() {}
 
 
+int ObjectTracker::getID()
+{
+	return _id;
+}
+
+
+void ObjectTracker::setID(int id)
+{
+	_id = id;
+}
+
 void ObjectTracker::initialize(Rect2d startPos, Mat& srcImg)
 {
 	_headLight = startPos;

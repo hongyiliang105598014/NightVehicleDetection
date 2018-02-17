@@ -86,7 +86,7 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 		const double HeightWidthRatio = static_cast<double>(height) / static_cast<double>(width);
 		if (area > 60 && area < 4000 && HeightWidthRatio < 2 && centroid.y > srcImg.rows / 2 - 10)
 		{
-			if (ROIs[0].contains(centroid) && area > 80)
+			if (ROIs[0].contains(centroid) && area > 100)
 			{
 				ObjectDetected objectDetected{ false,Rect(left,top,width,height),centroid ,true ,area };
 				ObjectDetectedVector.push_back(objectDetected);
@@ -153,7 +153,7 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 				const double carLightDistanse = ObjectDetectedVector[j].centroid.x - ObjectDetectedVector[i].centroid.x;
 				const double carLeftingDistanse = ObjectDetectedVector[i].centroid.x + carLightDistanse / 2;
 				const double carLightheightDiffY = abs(ObjectDetectedVector[j].centroid.y - ObjectDetectedVector[i].centroid.y);
-				if ((carLightheightDiffY < 20 &&
+				if ((carLightheightDiffY < 50 &&
 					/*isCarLightHeightDiffYCorrect(carLightheightDiffY, carLeftingDistanse) &&*/
 					(-0.0005*pow(carLightDistanse, 3) + 0.1379*pow(carLightDistanse, 2) - 14.055*carLightDistanse + 679.14 <= carLeftingDistanse + 100)
 					&& (-0.0301*pow(carLightDistanse, 2) + 0.8564*carLightDistanse + 575.29 >= carLeftingDistanse - 100)))
@@ -191,25 +191,25 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 	}
 
 	//detect single light in front ROI
-	//for (int i = 0; i < ObjectDetectedVector.size(); i++)
-	//{
-	//	if ((ROIs[0].contains(ObjectDetectedVector[i].centroid)) || (ROIs[1].contains(ObjectDetectedVector[i].centroid)) && (ObjectDetectedVector[i].isMatched == false))
-	//	{
-	//		/*ostringstream strs;
-	//		strs << ObjectDetectedVector[i].area;
-	//		string str = strs.str();
-	//		putText(srcImg, str, CvPoint(ObjectDetectedVector[i].region.x, ObjectDetectedVector[i].region.y - 25), 0, 1, Scalar(0, 0, 255), 2);*/
-	//		_headLightManager.setHeadLightPairs(ObjectDetectedVector[i].region, srcImg);
-	//		rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(0, 97, 255), 2);
-	//		//rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(255, 255, 255), 2);
-	//	}
-	//	else if (ObjectDetectedVector[i].isMatched == false)
-	//	{
-	//		/*_headLightManager.setHeadLightPairs(ObjectDetectedVector[i].region, srcImg);
-	//		rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(255, 255, 255), 2);*/
-	//	}
+	for (int i = 0; i < ObjectDetectedVector.size(); i++)
+	{
+		if (/*(ROIs[0].contains(ObjectDetectedVector[i].centroid)) ||*/ (ROIs[0].contains(ObjectDetectedVector[i].centroid)) && (ObjectDetectedVector[i].isMatched == false))
+		{
+			/*ostringstream strs;
+			strs << ObjectDetectedVector[i].area;
+			string str = strs.str();
+			putText(srcImg, str, CvPoint(ObjectDetectedVector[i].region.x, ObjectDetectedVector[i].region.y - 25), 0, 1, Scalar(0, 0, 255), 2);*/
+			_headLightManager.setHeadLightPairs(ObjectDetectedVector[i].region, srcImg);
+			rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(0, 97, 255), 2);
+			//rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(255, 255, 255), 2);
+		}
+		else if (ObjectDetectedVector[i].isMatched == false)
+		{
+			/*_headLightManager.setHeadLightPairs(ObjectDetectedVector[i].region, srcImg);
+			rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(255, 255, 255), 2);*/
+		}
 
-	//}
+	}
 
 	
 

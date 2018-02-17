@@ -28,6 +28,7 @@ public:
 	virtual vector<ObjectTracker> getVectorOfObjectTracker() = 0;
 	bool isCarLightHeightDiffYCorrect(int diffY, int distance);
 	
+	int carNo = 1;
 
 };
 

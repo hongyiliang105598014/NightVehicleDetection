@@ -24,11 +24,13 @@ public:
 	void setFrameCount(int count);
 	int getFrameCount();
 	bool IsOverlapping = false;
-	int ID = 0;
+	void setID(int id);
+	int getID();
 private:
 	string _trackingAlg = "KCF";
 	Ptr<Tracker> _tracker;
 	int _objectContainCount = 0;
 	int _frameCount = 0;
+	int _id = 0;
 	
 };
