@@ -27,9 +27,7 @@ public:
 	virtual int thresholdValue(Mat& src) = 0;
 	virtual vector<ObjectTracker> getVectorOfObjectTracker() = 0;
 	bool isCarLightHeightDiffYCorrect(int diffY, int distance);
-	
-	int carNo = 1;
-
+	virtual double getMinDistance() = 0;
 };
 
 

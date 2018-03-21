@@ -9,11 +9,14 @@
 DetectedPano::DetectedPano(string path) :DetectedPosition(path)
 {
 	backPosition = Rect(videoSize.width / 2 + 10, 0, videoSize.width / 2 - 10, videoSize.height / 2);
+	
+	//origin
 	rightPosition = Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2 , videoSize.height / 2);
-	//rightPosition = Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
 	leftPosition = Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
-	//leftPosition = Rect(0, 0, videoSize.width / 2, videoSize.height / 2);
-	//position = backPosition;
+
+	//distance
+	//leftPosition = Rect(videoSize.width / 2, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
+	//rightPosition = Rect(0, videoSize.height / 2, videoSize.width / 2, videoSize.height / 2);
 }
 
 DetectedPano::~DetectedPano()
@@ -59,138 +62,149 @@ void DetectedPano::checkOverlappingRegion(Mat right, Mat back, Mat left)
 	int carNo = 1;
 	int motorNo = 1;
 	vector<ObjectTracker> vectorOfRightObjectTracker = rightImageProcessor->getVectorOfObjectTracker();
-	sort(vectorOfRightObjectTracker.begin(), vectorOfRightObjectTracker.end(), sortByRightPosition);
+	//sort(vectorOfRightObjectTracker.begin(), vectorOfRightObjectTracker.end(), sortByRightPosition);
 	//cout << vectorOfRightObjectTracker.size() << endl;
-	
+
 	vector<ObjectTracker> vectorOfBackObjectTracker = backImageProcessor->getVectorOfObjectTracker();
-	sort(vectorOfBackObjectTracker.begin(), vectorOfBackObjectTracker.end(), sortByRightPosition);
+	//sort(vectorOfBackObjectTracker.begin(), vectorOfBackObjectTracker.end(), sortByRightPosition);
 	//cout << vectorOfBackObjectTracker.size() << endl;
+	cout << backImageProcessor->getMinDistance() << endl;
 
 	vector<ObjectTracker> vectorOfLeftObjectTracker = leftImageProcessor->getVectorOfObjectTracker();
-	sort(vectorOfLeftObjectTracker.begin(), vectorOfLeftObjectTracker.end(), sortByLeftPosition);
+	//sort(vectorOfLeftObjectTracker.begin(), vectorOfLeftObjectTracker.end(), sortByLeftPosition);
 	//cout << vectorOfLeftObjectTracker.size() << endl;
-	
+
 	double ly, ry;
 	//double ly = -0.624 * lx + 454;
 	//double ry = 0.607 * rx + 12;
 
-	
 
-	for (int i = 0; i < vectorOfBackObjectTracker.size(); i++)
+
+	/*for (int i = 0; i < vectorOfBackObjectTracker.size(); i++)
 	{
-		vectorOfBackObjectTracker[i].setID(carNo++);	
+	vectorOfBackObjectTracker[i].setID(carNo++);
 	}
-	
+
 	for (int i = 0; i < vectorOfRightObjectTracker.size(); i++)
 	{
 
-		vectorOfRightObjectTracker[i].setID(carNo++);
+	vectorOfRightObjectTracker[i].setID(carNo++);
 	}
 
 	for (int i = 0; i < vectorOfLeftObjectTracker.size(); i++)
 	{
-		vectorOfLeftObjectTracker[i].setID(carNo++);
-	}
-
-	if (vectorOfBackObjectTracker.size() > 0 && vectorOfRightObjectTracker.size() > 0)
-	{
-		for (int i = 0; i < vectorOfBackObjectTracker.size(); i++)
-		{
-			int posX = vectorOfBackObjectTracker[i].getCurrentPos().x + vectorOfBackObjectTracker[i].getCurrentPos().width;
-			int posY = vectorOfBackObjectTracker[i].getCurrentPos().y + vectorOfBackObjectTracker[i].getCurrentPos().height;
-
-			ly = -0.624 * posX + 454;
-			ry = 0.607 * posX + 12;
-
-			//cout << "posX = " << posX << " posY = " << posY << endl;
-			//cout << "ly = " << ly;
-
-			if (posX < 300 && posY < ly)
-			{
-				for (int j = 0; j < vectorOfRightObjectTracker.size(); j++)
-				{
-
-					//cout << "Match" << endl;
-					vectorOfBackObjectTracker[i].IsOverlapping = true;
-					vectorOfRightObjectTracker[j].IsOverlapping = true;
-
-					vectorOfRightObjectTracker[j].setID(vectorOfBackObjectTracker[i].getID());
-
-					break;
-				}
-			}
-			else if (posX > 360 && posY < ry)
-			{
-				for (int j = 0; j < vectorOfLeftObjectTracker.size(); j++)
-				{
-					vectorOfBackObjectTracker[i].IsOverlapping = true;
-					vectorOfLeftObjectTracker[j].IsOverlapping = true;
-
-					vectorOfLeftObjectTracker[j].setID(vectorOfBackObjectTracker[i].getID());
-				}
-			}
-		}
-	}
-	
-	/*else if (vectorOfRightObjectTracker.size() > 0)
-	{
-		for (int i = 0; i < vectorOfRightObjectTracker.size(); i++)
-		{
-			if (vectorOfRightObjectTracker[i].ID == 0)
-			{
-				vectorOfRightObjectTracker[i].ID = carNo;
-
-				for (int j = 0; j < vectorOfBackObjectTracker.size(); j++)
-				{
-					int posX = vectorOfBackObjectTracker[j].getCurrentPos().x + vectorOfBackObjectTracker[j].getCurrentPos().width;
-					int posY = vectorOfBackObjectTracker[j].getCurrentPos().y + vectorOfBackObjectTracker[j].getCurrentPos().height;
-
-					ly = -0.624 * posX + 454;
-					if (posX < 340 && posY < ly)
-					{
-						//cout << "Match" << endl;
-						vectorOfRightObjectTracker[i].IsOverlapping = true;
-						vectorOfBackObjectTracker[j].IsOverlapping = true;
-
-
-						vectorOfBackObjectTracker[j].ID = vectorOfRightObjectTracker[i].ID;
-
-						break;
-					}
-				}
-			}
-			carNo++;
-		}
+	vectorOfLeftObjectTracker[i].setID(carNo++);
 	}*/
-	
-	for(int i = 0; i < vectorOfBackObjectTracker.size(); i++)
+
+	for (int i = 0; i < vectorOfBackObjectTracker.size(); i++)
 	{
+		int posRX = vectorOfBackObjectTracker[i].getCurrentPos().x + vectorOfBackObjectTracker[i].getCurrentPos().width;
+		int posRY = vectorOfBackObjectTracker[i].getCurrentPos().y + vectorOfBackObjectTracker[i].getCurrentPos().height;
+
+		int posLX = vectorOfBackObjectTracker[i].getCurrentPos().x;
+		int posLY = vectorOfBackObjectTracker[i].getCurrentPos().y + vectorOfBackObjectTracker[i].getCurrentPos().height;
+
+		ry = -0.624 * posRX + 454;
+		ly = 0.607 * posLX + 12;
+
+		//cout << "posRX = " << posRX << " posRY = " << posRY << endl;
+		//cout << "ry = " << ry;
+
+		//cout << "posLX = " << posLX << " posLY = " << posLY << endl;
+		//cout << "ly = " << ly;
+
+		if (posRX < 340 && posRY < ry)
+		{
+			for (int j = 0; j < vectorOfRightObjectTracker.size(); j++)
+			{
+				vectorOfBackObjectTracker[i].IsOverlapping = true;
+				vectorOfRightObjectTracker[j].IsOverlapping = true;
+				break;
+			}
+		}
+		if (posLX > 360 && posLY < ly)
+		{
+			cout << "duplicate" << endl;
+			for (int j = 0; j < vectorOfLeftObjectTracker.size(); j++)
+			{
+				vectorOfBackObjectTracker[i].IsOverlapping = true;
+				vectorOfLeftObjectTracker[j].IsOverlapping = true;
+			}
+		}
+	}
+
+	for (int i = 0; i < vectorOfBackObjectTracker.size(); i++)
+	{
+		int posRX = vectorOfBackObjectTracker[i].getCurrentPos().x + vectorOfBackObjectTracker[i].getCurrentPos().width;
+		int posLX = vectorOfBackObjectTracker[i].getCurrentPos().x;
 		stringstream ss;
 		ss << "car" << vectorOfBackObjectTracker[i].getID();
-		putText(back, ss.str(), Point(vectorOfBackObjectTracker[i].getCurrentPos().x - 10, vectorOfBackObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(0, 0, 255), 3);
+		if (vectorOfBackObjectTracker[i].IsOverlapping && posRX < 340)
+		{
+			putText(back, ss.str(), Point(vectorOfBackObjectTracker[i].getCurrentPos().x - 10, vectorOfBackObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(255, 0, 255), 3);
+		}
+		else if (vectorOfBackObjectTracker[i].IsOverlapping && posLX > 360)
+		{
+			putText(back, ss.str(), Point(vectorOfBackObjectTracker[i].getCurrentPos().x - 10, vectorOfBackObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(128, 128, 0), 3);
+		}
+		else
+		{
+			putText(back, ss.str(), Point(vectorOfBackObjectTracker[i].getCurrentPos().x - 10, vectorOfBackObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(0, 0, 255), 3);
+		}
+
 	}
 
 	for (int i = 0; i < vectorOfRightObjectTracker.size(); i++)
 	{
 		stringstream ss;
 		ss << "car" << vectorOfRightObjectTracker[i].getID();
-		putText(right, ss.str(), Point(vectorOfRightObjectTracker[i].getCurrentPos().x - 10, vectorOfRightObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(0, 0, 255), 3);
+		if (vectorOfRightObjectTracker[i].IsOverlapping)
+		{     
+			putText(right, ss.str(), Point(vectorOfRightObjectTracker[i].getCurrentPos().x - 10, vectorOfRightObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(255, 0, 255), 3);
+		}
+		else
+		{
+			putText(right, ss.str(), Point(vectorOfRightObjectTracker[i].getCurrentPos().x - 10, vectorOfRightObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(0, 0, 255), 3);
+		}
+
 	}
 
 	for (int i = 0; i < vectorOfLeftObjectTracker.size(); i++)
 	{
 		stringstream ss;
 		ss << "car" << vectorOfLeftObjectTracker[i].getID();
-		putText(left, ss.str(), Point(vectorOfLeftObjectTracker[i].getCurrentPos().x - 10, vectorOfLeftObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(0, 0, 255), 3);
+		if (vectorOfLeftObjectTracker[i].IsOverlapping)
+		{
+			putText(left, ss.str(), Point(vectorOfLeftObjectTracker[i].getCurrentPos().x - 10, vectorOfLeftObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(128, 128, 0), 3);
+		}
+		else
+		{
+			putText(left, ss.str(), Point(vectorOfLeftObjectTracker[i].getCurrentPos().x - 10, vectorOfLeftObjectTracker[i].getCurrentPos().y - 10), 0, 1, Scalar(0, 0, 255), 3);
+		}
+
+	}
+
+
+	if (vectorOfBackObjectTracker.size() > 0 || vectorOfRightObjectTracker.size() > 0 || vectorOfLeftObjectTracker.size() > 0)
+	{
+		if (backImageProcessor->getMinDistance() < 10.0)
+		{
+			circle(right, Point(360, 60), 20, Scalar(0, 0, 255), -1);
+		}
+		if(rightImageProcessor->getMinDistance() < 10.0 || leftImageProcessor->getMinDistance() < 10.0)
+		{
+			circle(right, Point(360, 60), 20, Scalar(0, 255, 255), -1);
+		}
+		
 	}
 }
 
 void DetectedPano::run()
 {
 
-	CBrightObjectSegment backBrightObjectSegment(0.995);
-	CBrightObjectSegment rightBrightObjectSegment(0.995);
-	CBrightObjectSegment leftBrightObjectSegment(0.995);
+	CBrightObjectSegment backBrightObjectSegment(0.996);
+	CBrightObjectSegment rightBrightObjectSegment(0.9999);
+	CBrightObjectSegment leftBrightObjectSegment(0.996);
 	char filename[] = "road1_FPS.csv";
 	fstream fp;
 	fp.open(filename, ios::app);//¶}±ÒÀÉ®×
@@ -199,14 +213,14 @@ void DetectedPano::run()
 	}
 
 	VideoWriter writer, writer2;
-	writer.open("test.avi", CV_FOURCC('M', 'P', '4', '2'), capture.get(CV_CAP_PROP_FPS), Size(1747, 387), true);
+	writer.open("test.avi", CV_FOURCC('M', 'P', '4', '2'), capture.get(CV_CAP_PROP_FPS), Size(1310, 290), true);
 	if (!writer.isOpened())
 	{
 		cout << "Cannot write video" << endl;
 		system("pause");
 	}
 
-	capture.set(CV_CAP_PROP_POS_FRAMES, 700);
+	capture.set(CV_CAP_PROP_POS_FRAMES, 820); //5100
 
 	for (;;)
 	{
@@ -214,10 +228,10 @@ void DetectedPano::run()
 
 		capture >> src;
 		
-		/*if (framePosition == 2800)
+		if (framePosition == 6100)
 		{
 			break;
-		}*/
+		}
 
 		if (src.empty())
 		{
@@ -277,26 +291,23 @@ void DetectedPano::run()
 		Mat binary = cv::Mat::ones(videoSize.height / 2, videoSize.width / 2 * 3, CV_8UC1);
 
 		rectangle(back, grayCenterROI, Scalar(0, 255, 0), 1, 8, 0); // draw back ROI
-		line(back, Point(grayBack.cols / 2, grayBack.rows / 2 - 12), Point(0, right.rows - 30), Scalar(0, 255, 0), 3);
-		line(back, Point(grayBack.cols / 2, grayBack.rows / 2 - 12), Point(right.cols, right.rows - 30), Scalar(0, 255, 0), 3);
+		//line(back, Point(grayBack.cols / 2, grayBack.rows / 2 - 12), Point(0, right.rows - 30), Scalar(255, 255, 255), 3);
+		//line(back, Point(grayBack.cols / 2, grayBack.rows / 2 - 12), Point(right.cols, right.rows - 30), Scalar(255, 255, 255), 3);
 
 		//cout << "leftSide: " << "(" << grayBack.cols / 2 << "," << grayBack.rows / 2 - 12 << ")" << " " << "(" << 0 << "," << right.rows - 30 << ")" << endl;
 		//cout << "rightSide: " << "(" << grayBack.cols / 2 << "," << grayBack.rows / 2 - 12 << ")" << " " << "(" << right.cols << "," << right.rows - 30 << ")" << endl;
 
-		//rectangle(back, Rect(0, grayBack.rows / 2, 300, grayBack.rows / 2), Scalar(255, 255, 255), 1, 8, 0); // draw back ROI
-		//rectangle(back, Rect(400, grayBack.rows / 2, grayBack.cols, grayBack.rows / 2), Scalar(255, 255, 255), 1, 8, 0); // draw back ROI
-
 
 		rectangle(right, grayRightROI, Scalar(0, 255, 255), 1, 8, 0); // draw right ROI
 		rectangle(right, grayRightNearROI, Scalar(0, 0, 255), 1, 8, 0); // draw right near ROI
-		line(right, Point(0, right.rows / 2 - 10), Point(500, right.rows / 2 - 10), Scalar(255, 0, 0), 3);
+		//line(right, Point(0, right.rows / 2 - 10), Point(500, right.rows / 2 - 10), Scalar(255, 0, 0), 3);
 		//line(right, Point(348, 0), Point(348, right.rows), Scalar(255, 0, 0), 3);
-		circle(right, Point(350, 60), 20, Scalar(0, 255, 255), -1);
+		
 
 
 		rectangle(left, grayLeftROI, Scalar(0, 255, 255), 1, 8, 0); // draw Front ROI
 		rectangle(left, grayLeftNearROI, Scalar(0, 0, 255), 1, 8, 0); // draw Front ROI
-		line(left, Point(100, left.rows / 2 - 50), Point(500, left.rows / 2 - 50), Scalar(255, 0, 0), 3);
+		//line(left, Point(100, left.rows / 2 - 50), Point(500, left.rows / 2 - 50), Scalar(255, 0, 0), 3);
 		
 
 
@@ -321,7 +332,7 @@ void DetectedPano::run()
 		grayCenter.copyTo(binary(Rect(grayRightFront.cols, 0, grayCenter.cols, grayCenter.rows)));
 		line(binary, Point(grayRightFront.cols + grayCenter.cols, 0), Point(grayRightFront.cols + grayCenter.cols, grayCenter.rows), Scalar(255, 0, 0), 3);
 		grayLeftFront.copyTo(binary(Rect(grayRightFront.cols + grayCenter.cols, 0, grayLeftFront.cols, grayLeftFront.rows)));
-		resize(binary, binary, Size(), 0.8, 0.8, INTER_LINEAR);
+		resize(binary, binary, Size(), 0.6, 0.6, INTER_LINEAR);
 
 		
 
@@ -333,9 +344,9 @@ void DetectedPano::run()
 		
 		
 		//cout << "VW: " << videoSize.width / 2 * 3 << "H: " << videoSize.height / 2 << endl;
-		//cout << "PW: " << pano.cols << "H: " << pano.rows << endl;
+		//cout << "PW:" << pano.cols << " PH:" << pano.rows << endl;
 		
 		writer << pano;
-		waitKey(1);
+		waitKey(0);
 	}
 }

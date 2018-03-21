@@ -26,6 +26,7 @@ public:
 	bool IsOverlapping = false;
 	void setID(int id);
 	int getID();
+	double Distance = -1;
 private:
 	string _trackingAlg = "KCF";
 	Ptr<Tracker> _tracker;

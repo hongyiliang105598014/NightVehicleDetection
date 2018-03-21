@@ -15,17 +15,15 @@ public:
 	HeadLightManager();
 	~HeadLightManager();
 	void setLightObjects(vector<ObjectDetected> lightObjects);
-	void setHeadLightPairs(Rect2d headLight, Mat& srcImg);
+	void setHeadLightPairs(Rect2d headLight, Mat& srcImg, int& id);
 	void updateHeadLightPairs(Mat& srcImg, Mat srcTemp);
 	void setBackDetectRegion(vector<Rect> positions, int offsetX, int offsetY);
 	void setSideDetectRegion(vector<Rect> positions, int offsetX, int offsetY);
 	vector<ObjectTracker> getVectorOfObjectTracker();
-
-	
-	
 private:
 	vector<Rect2d> _headLightPairs;
 	vector<ObjectTracker> _vectorOfObjectTracker;
+	vector<ObjectTracker> _vectorOfRemovedTracker;
 	vector<ObjectDetected> _lightObjects;
 	Rect _left;
 	Rect _center;

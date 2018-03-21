@@ -84,7 +84,7 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 		const int top = stats.at<int>(label, CC_STAT_TOP) + offsetY;
 		Point centroid = Point(centroids.at<double>(label, 0) + offsetX, centroids.at<double>(label, 1) + offsetY);
 		const double HeightWidthRatio = static_cast<double>(height) / static_cast<double>(width);
-		if (area > 60 && area < 4000 && HeightWidthRatio < 2 && centroid.y > srcImg.rows / 2 - 10)
+		if (area > 80 && area < 4000 && HeightWidthRatio < 2 && centroid.y > srcImg.rows / 2 - 10) //distance: right is different horizontal line
 		{
 			if (ROIs[0].contains(centroid) && area > 100)
 			{
@@ -153,10 +153,10 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 				const double carLightDistanse = ObjectDetectedVector[j].centroid.x - ObjectDetectedVector[i].centroid.x;
 				const double carLeftingDistanse = ObjectDetectedVector[i].centroid.x + carLightDistanse / 2;
 				const double carLightheightDiffY = abs(ObjectDetectedVector[j].centroid.y - ObjectDetectedVector[i].centroid.y);
-				if ((carLightheightDiffY < 50 &&
+				if ((carLightheightDiffY < 10 &&
 					/*isCarLightHeightDiffYCorrect(carLightheightDiffY, carLeftingDistanse) &&*/
-					(-0.0005*pow(carLightDistanse, 3) + 0.1379*pow(carLightDistanse, 2) - 14.055*carLightDistanse + 679.14 <= carLeftingDistanse + 100)
-					&& (-0.0301*pow(carLightDistanse, 2) + 0.8564*carLightDistanse + 575.29 >= carLeftingDistanse - 100)))
+					(-0.0005*pow(carLightDistanse, 3) + 0.1379*pow(carLightDistanse, 2) - 14.055*carLightDistanse + 679.14 <= carLeftingDistanse + 200)
+					&& (-0.0301*pow(carLightDistanse, 2) + 0.8564*carLightDistanse + 575.29 >= carLeftingDistanse - 200)))
 				{
 					ObjectDetectedVector[i].isMatched = true;
 					ObjectDetectedVector[j].isMatched = true;
@@ -167,7 +167,7 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 
 # ifdef ENABLE_TRACKER
 
-					_headLightManager.setHeadLightPairs(carLightRect, srcImg);
+					_headLightManager.setHeadLightPairs(carLightRect, srcImg, vehicleID);
 # endif
 
 					rectangle(srcImg, carLightRect, Scalar(0, 0, 255), 2);
@@ -193,13 +193,13 @@ void RightImageProcessor::detectLight(Mat& srcImg, Mat binaryImg, int offsetX, i
 	//detect single light in front ROI
 	for (int i = 0; i < ObjectDetectedVector.size(); i++)
 	{
-		if (/*(ROIs[0].contains(ObjectDetectedVector[i].centroid)) ||*/ (ROIs[0].contains(ObjectDetectedVector[i].centroid)) && (ObjectDetectedVector[i].isMatched == false))
+		if (/*(ROIs[1].contains(ObjectDetectedVector[i].centroid)) ||*/ (ROIs[0].contains(ObjectDetectedVector[i].centroid)) && (ObjectDetectedVector[i].isMatched == false))
 		{
 			/*ostringstream strs;
 			strs << ObjectDetectedVector[i].area;
 			string str = strs.str();
 			putText(srcImg, str, CvPoint(ObjectDetectedVector[i].region.x, ObjectDetectedVector[i].region.y - 25), 0, 1, Scalar(0, 0, 255), 2);*/
-			_headLightManager.setHeadLightPairs(ObjectDetectedVector[i].region, srcImg);
+			_headLightManager.setHeadLightPairs(ObjectDetectedVector[i].region, srcImg, vehicleID);
 			rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(0, 97, 255), 2);
 			//rectangle(srcImg, ObjectDetectedVector[i].region, Scalar(255, 255, 255), 2);
 		}
@@ -271,30 +271,57 @@ vector<ObjectTracker> RightImageProcessor::getVectorOfObjectTracker()
 	return _headLightManager.getVectorOfObjectTracker();
 }
 
+double RightImageProcessor::getMinDistance()
+{
+	return minDistance;
+}
+
 void RightImageProcessor::calcDistance(Mat& srcImg)
 {
 	vector<ObjectTracker> headLights = _headLightManager.getVectorOfObjectTracker();
 
-	double lambda = 170.9;
-	//double lambda = 269.9; // highway
+	//double lambda = 160.9;
+	//double lambda = 150.9; // distance 10;
+	//double lambda = 141.9; // distance 10;
+	double lambda = 555.9; // highway
+
+	minDistance = 999;
 
 	for (int i = 0; i < headLights.size(); i++)
 	{
-		Point vh = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), srcImg.rows / 2 - 10);
+		Point vh = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), srcImg.rows / 2 - 30);
 		Point v1 = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), headLights[i].getCurrentPos().y + (headLights[i].getCurrentPos().height / 2));
-		Point v2 = Point(srcImg.cols / 2, srcImg.rows);
-		//line(srcImg, v1, v2, Scalar(255, 0, 0), 3);
-		//line(srcImg, Point(0, srcImg.rows / 2 - 30), Point(500, srcImg.rows / 2 - 30), Scalar(255, 0, 0), 3);
+		Point v2 = Point(headLights[i].getCurrentPos().x + (headLights[i].getCurrentPos().width / 2), srcImg.rows);
 
 		const double carDistance = lambda / sqrt(pow((v1.x - vh.x), 2) + pow((v1.y - vh.y), 2)) - lambda / sqrt(pow((v2.x - vh.x), 2) + pow((v2.y - vh.y), 2));
-		const double lambda2 = 3 / ((1 / sqrt(pow((v1.x - vh.x), 2) + pow((v1.y - vh.y), 2))) - (1 / sqrt(pow((v2.x - vh.x), 2) + pow((v2.y - vh.y), 2))));
-		ostringstream strs2;
-		strs2.precision(2);
-		strs2 << carDistance << "m"/* << " : " <<  "l = " << lambda2*/;
-		
-		
-		
-		putText(srcImg, strs2.str(), Point(headLights[i].getCurrentPos().x, headLights[i].getCurrentPos().y + 50), 0, 1, Scalar(0, 255, 0), 2);
+		distanceList[i].push_back(carDistance);
+
+		//cout << "distanceBuffer" << i << distanceList[i].size() << endl;
+
+		if (distanceList[i].size() == 10)
+		{
+			for (int j = 0; j < distanceList[i].size(); j++)
+			{
+				avgDistance[i] += distanceList[i][j];
+			}
+
+			avgDistance[i] = avgDistance[i] / 10.0;
+			distanceList[i].clear();
+		}
+
+		if (minDistance > avgDistance[i])
+		{
+			minDistance = avgDistance[i];
+		}
+
+
+		if (avgDistance[i] > 0.0)
+		{
+			ostringstream strs2;
+			strs2.precision(2);
+			strs2 << avgDistance[i] << "m"/*  << " : " << (headLights[i].getCurrentPos().y + (headLights[i].getCurrentPos().height / 2)) << " : " << srcImg.rows*/;
+			putText(srcImg, strs2.str(), Point(headLights[i].getCurrentPos().x, headLights[i].getCurrentPos().y + 50), 0, 1, Scalar(0, 255, 0), 2);
+		}
 	}
 }
 

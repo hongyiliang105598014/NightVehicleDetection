@@ -27,9 +27,14 @@ public:
 	bool isCarLightHeightDiffYCorrect(int diffY, int distance);
 	vector<ObjectTracker> getVectorOfObjectTracker();
 	void calcDistance(Mat& srcImg);
+	int vehicleID = 1;
+	double getMinDistance();
 private:
 	vector<ObjectDetected> ObjectDetectedVector;
 	static bool compareDistance(const ObjectDetected &a, const ObjectDetected &b);
 	int previousThresholdValue = 0;
 	HeadLightManager _headLightManager;
+	vector<double> distanceList[5];
+	double avgDistance[5] = { 0 };
+	double minDistance = 999;
 };

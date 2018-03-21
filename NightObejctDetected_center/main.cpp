@@ -8,6 +8,7 @@
 #include "LeftImageProcessor.h"
 #include "DetectedRight.h"
 #include "DetectedBack.h"
+#include "DetectedLeft.h"
 #include "DetectedPano.h"
 
 using namespace std;
@@ -29,44 +30,54 @@ int main() {
 	string carRightPath3 = "D:/UserFolder/Desktop/haitec/video/cut/lowbrightness1.avi";
 	string carRightPath4 = "D:/UserFolder/Desktop/haitec/video/cut/lowbrightness2.avi";
 
-	string carPanoPath1 = "../car_back_side_cut/cut_sunny/highway1.avi"; //frame 0 ~ 1000 city
-	string carPanoPath2 = "../car_back_side_cut/cut_sunny/highway2.avi"; //frame 1410 highway
-	string carPanoPath3 = "../car_back_side_cut/cut_sunny/highway3.avi"; //frame 1410 highway
-	string carPanoPath4 = "../car_back_side_cut/cut_sunny/road1.avi";
-	string carPanoPath5 = "../car_back_side_cut/dazi/9m.avi";
-	string carPanoPath6 = "../car_back_side_cut/dazi/car1_rainy.avi";
-	string carPanoPath7 = "../car_back_side_cut/dazi/motor1_rainy.avi";
-	string carPanoPath8 = "../car_back_side_cut/distance_test/left.avi";
-	string carPanoPath9 = "../car_back_side_cut/distance_test/right1.avi";
+	string carPanoPath1 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/highway1.avi"; //frame 0 ~ 1000 city
+	string carPanoPath2 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/highway2.avi"; //frame 1410 highway
+	string carPanoPath3 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/highway3.avi"; //frame 1410 highway
+	string carPanoPath4 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/road1.avi";
+	string carPanoPath5 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/dazi/9m.avi";
+	string carPanoPath6 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/dazi/car1_rainy.avi";
+	string carPanoPath7 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/dazi/motor1_rainy.avi";
+	string carPanoPath8 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/distance_test/left.avi";
+	string carPanoPath9 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/distance_test/right1.avi";
 
-	string carPanoPath10 = "../car_back_side_cut/cut_sunny/neighu2_cut.mp4";
-	string carPanoPath11 = "../car_back_side_cut/cut_sunny/neighu3_cut.mp4";
-	string carPanoPath12 = "../car_back_side_cut/cut_sunny/neighu4_cut.mp4";
+	string carPanoPath10 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/neighu2_cut.mp4";
+	string carPanoPath11 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/neighu3_cut.mp4";
+	string carPanoPath12 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/neighu4_cut.mp4";
+	string carPanoPath121 = "D:/UserFolder/Desktop/haitec/video/car_back_side_cut/cut_sunny/neighu4.avi";
+
+	string carPanoPath13 = "D:/UserFolder/Desktop/haitec/video/distance/back-25.avi";
+	string carPanoPath14 = "D:/UserFolder/Desktop/haitec/video/distance/back-20.avi";
+	string carPanoPath15 = "D:/UserFolder/Desktop/haitec/video/distance/back-10-15.avi";
+
+	string carPanoPath16 = "D:/UserFolder/Desktop/haitec/video/distance/right-10-15-20.avi";
+	string carPanoPath17 = "D:/UserFolder/Desktop/haitec/video/distance/left-10.avi";
+	string carPanoPath18 = "D:/UserFolder/Desktop/haitec/video/distance/left-15.avi";
+	string carPanoPath19 = "D:/UserFolder/Desktop/haitec/video/distance/left-20.avi";
 
 	if (mode == 0)
 	{
-		DetectedPosition *detectedPosition = new DetectedBack(carBackPath1);
+		DetectedPosition *detectedPosition = new DetectedBack(carPanoPath4);
 		BackImageProcessor *backImageProcessor = new BackImageProcessor();
 		detectedPosition->SetImageProcessor(backImageProcessor);
 		detectedPosition->run();
 	}
 	else if (mode == 1)
 	{
-		DetectedPosition *detectedPosition = new DetectedRight(carPanoPath10);
+		DetectedPosition *detectedPosition = new DetectedRight(carRightPath1);
 		RightImageProcessor *rightImageProcessor = new RightImageProcessor();
 		detectedPosition->SetImageProcessor(rightImageProcessor);
 		detectedPosition->run();
 	}
-	/*else if (mode == 2)
+	else if (mode == 2)
 	{
 		DetectedPosition *detectedPosition = new DetectedLeft(carPanoPath12);
 		LeftImageProcessor *leftImageProcessor = new LeftImageProcessor();
 		detectedPosition->SetImageProcessor(leftImageProcessor);
 		detectedPosition->run();
-	}*/
+	}
 	else if (mode == 3)
 	{
-		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath11);
+		DetectedPosition *detectedPosition = new DetectedPano(carPanoPath15);
 		ImageProcessor *backImageProcessor = new BackImageProcessor();
 		ImageProcessor *rightImageProcessor = new RightImageProcessor();
 		ImageProcessor *leftImageProcessor = new LeftImageProcessor();

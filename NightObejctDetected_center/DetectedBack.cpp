@@ -65,9 +65,9 @@ void DetectedBack::run()
 
 		// src center ROI
 		const int centerRectX = 0;
-		const int centerRectY = gray.rows / 5 * 2;
+		const int centerRectY = gray.rows / 2 ;
 		const int centerRectWidth = gray.cols;
-		const int centerRectHeight = gray.rows / 5 * 3;
+		const int centerRectHeight = gray.rows / 2;
 		Rect centerRect = Rect(centerRectX, centerRectY, centerRectWidth, centerRectHeight);
 
 		// src left ROI
@@ -99,45 +99,43 @@ void DetectedBack::run()
 		
 
 
-		//imshow("Right gray", gray);
+		imshow("Right gray", gray);
 
-		//ThresholdSet thres = brightObjectSegment.GetThresholdSet();
+		ThresholdSet thres = brightObjectSegment.GetThresholdSet();
 
-		//for (int i = 0; i < thres.size(); i++)
-		//{
-		//cout << "Thres:"  << thres[0] << endl;
-		/*for (int j = 0; j < gray.cols; j++)
+		for (int i = 0; i < thres.size(); i++)
 		{
-			for (int k = 0; k < gray.rows; k++)
+			cout << "Thres:"  << thres[0] << endl;
+			for (int j = 0; j < gray.cols; j++)
 			{
-				//cout << "pixel: " << (int)gray.at<uchar>(k, j) << endl;
-				if ((int)gray.at<uchar>(k, j) <= thres[thres.size() - 4])
+				for (int k = 0; k < gray.rows; k++)
 				{
-					gray.at<uchar>(k, j) = 0;
-				}
-				else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 4] && (int)gray.at<uchar>(k, j) < thres[thres.size() - 3])
-				{
-					gray.at<uchar>(k, j) = 32;
-				}
-				else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 3] && (int)gray.at<uchar>(k, j) < thres[thres.size() - 2])
-				{
-					gray.at<uchar>(k, j) = 64;
-				}
-				else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 2] && (int)gray.at<uchar>(k, j) < thres[thres.size() - 1])
-				{
-					gray.at<uchar>(k, j) = 128;
-				}
-				else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 1])
-				{
-					gray.at<uchar>(k, j) = 255;
+					//cout << "pixel: " << (int)gray.at<uchar>(k, j) << endl;
+					if ((int)gray.at<uchar>(k, j) <= thres[thres.size() - 4])
+					{
+						gray.at<uchar>(k, j) = 0;
+					}
+					else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 4] && (int)gray.at<uchar>(k, j) < thres[thres.size() - 3])
+					{
+						gray.at<uchar>(k, j) = 32;
+					}
+					else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 3] && (int)gray.at<uchar>(k, j) < thres[thres.size() - 2])
+					{
+						gray.at<uchar>(k, j) = 64;
+					}
+					else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 2] && (int)gray.at<uchar>(k, j) < thres[thres.size() - 1])
+					{
+						gray.at<uchar>(k, j) = 128;
+					}
+					else if ((int)gray.at<uchar>(k, j) >= thres[thres.size() - 1])
+					{
+						gray.at<uchar>(k, j) = 255;
+					}
 				}
 			}
-		}*/
+		}
 
-
-		//}
-
-		//imshow("Right gray thres", gray);
+		imshow("Right gray thres", gray);
 		//imshow("Right Binary", center);
 
 		time_t start, finish;
@@ -172,7 +170,7 @@ void DetectedBack::run()
 
 		videoWriter << src;
 	
-		switch (1) {
+		switch (0) {
 		case 1:
 			cout << "frame:" << capture.get(CV_CAP_PROP_POS_FRAMES) << endl;
 			waitKey(1);
